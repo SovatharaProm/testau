@@ -13,14 +13,14 @@ export default function CustomerCRUD() {
   async function fetchCustomers() {
     setLoading(true);
     try {
-      const response = await fetch('/api/allcustomer', {
-        method: 'GET',
+      const response = await fetch("/api/allcustomer", {
+        method: "GET",
         headers: {
-          'Cache-Control': 'no-store', // Ensure no cache is used
+          "Cache-Control": "no-store", // Ensure no cache is used
         },
       });
-  
-      if (!response.ok) throw new Error('Failed to fetch customers');
+
+      if (!response.ok) throw new Error("Failed to fetch customers");
       const data = await response.json();
       setCustomers(data);
     } catch (error) {
@@ -29,31 +29,34 @@ export default function CustomerCRUD() {
       setLoading(false);
     }
   }
-  
 
   const handleCustomerSubmit = async (data) => {
     try {
-        const response = await fetch('/api/createcustomer', {
-            method: 'POST', // Ensure it's POST
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Error in adding customer: ${errorData.error}`);
-        }
-        alert('Customer added!');
-        resetForm();
-        fetchCustomers();
+      const response = await fetch("/api/createcustomer", {
+        method: "POST", // Ensure it's POST
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      // Log the response body
+      const responseBody = await response.text();
+      console.log("Response Body:", responseBody);
+
+      if (!response.ok) {
+        const errorData = JSON.parse(responseBody);
+        throw new Error(`Error in adding customer: ${errorData.error}`);
+      }
+
+      alert("Customer added!");
+      resetForm();
+      fetchCustomers(); // Fetch customers after adding a new one
     } catch (error) {
-        alert(error.message);
-        console.log(error);
+      alert(error.message);
+      console.log(error);
     }
-};
-  
-  
+  };
 
   // Handle Delete Customer
   const handleDeleteCustomer = async (id) => {
@@ -165,15 +168,25 @@ export default function CustomerCRUD() {
 
         {/* List of customers */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Customer List ({customers.length})</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Customer List ({customers.length})
+          </h2>
           <table className="min-w-full bg-white border">
             <thead>
               <tr>
                 <th className="px-4 py-2 border-b-2 border-gray-300">Name</th>
-                <th className="px-4 py-2 border-b-2 border-gray-300">Date of Birth</th>
-                <th className="px-4 py-2 border-b-2 border-gray-300">Member Number</th>
-                <th className="px-4 py-2 border-b-2 border-gray-300">Interest</th>
-                <th className="px-4 py-2 border-b-2 border-gray-300">Actions</th>
+                <th className="px-4 py-2 border-b-2 border-gray-300">
+                  Date of Birth
+                </th>
+                <th className="px-4 py-2 border-b-2 border-gray-300">
+                  Member Number
+                </th>
+                <th className="px-4 py-2 border-b-2 border-gray-300">
+                  Interest
+                </th>
+                <th className="px-4 py-2 border-b-2 border-gray-300">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -181,7 +194,9 @@ export default function CustomerCRUD() {
                 <tr key={customer._id}>
                   <td className="px-4 py-2 border-b">{customer.name}</td>
                   <td className="px-4 py-2 border-b">{customer.dateOfBirth}</td>
-                  <td className="px-4 py-2 border-b">{customer.memberNumber}</td>
+                  <td className="px-4 py-2 border-b">
+                    {customer.memberNumber}
+                  </td>
                   <td className="px-4 py-2 border-b">{customer.interest}</td>
                   <td className="px-4 py-2 border-b flex space-x-4">
                     <button
