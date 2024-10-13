@@ -1,18 +1,23 @@
+import dbConnect from "@/lib/db";
 import Customer from "@/models/Customer";
-import { connectToDB } from "@/utils/database";
+import { NextResponse } from "next/server";
 
-// Set revalidation time to 1 second
 export const revalidate = 1;
 
 export const GET = async (request) => {
     try {
-        await connectToDB();
+        await dbConnect();
 
         // Fetch all customers from the database
         const customers = await Customer.find({});
 
-        return new Response(JSON.stringify(customers), { status: 200 });
+        const response = NextResponse.json(customers, { status: 200 });
+
+        // Add cache-control header to prevent caching
+        response.headers.set('Cache-Control', 'no-store');
+
+        return response;
     } catch (error) {
-        return new Response("Failed to fetch all customers", { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
     }
 }
