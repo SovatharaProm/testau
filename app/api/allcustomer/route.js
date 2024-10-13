@@ -7,8 +7,13 @@ export async function GET() {
   await dbConnect();
   try {
     const customers = await Customer.find({});
-    return NextResponse.json(customers);
+    const response = NextResponse.json(customers);
+    
+    // Add cache-control header to prevent caching
+    response.headers.set('Cache-Control', 'no-store');
+    
+    return response;
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch customers" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
   }
 }

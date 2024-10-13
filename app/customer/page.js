@@ -10,12 +10,17 @@ export default function CustomerCRUD() {
   const [error, setError] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  // Fetch all customers
   async function fetchCustomers() {
     setLoading(true);
     try {
-      const response = await fetch(`/api/allcustomer`);
-      if (!response.ok) throw new Error("Failed to fetch customers");
+      const response = await fetch('/api/allcustomer', {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-store', // Prevent caching
+        },
+      });
+  
+      if (!response.ok) throw new Error('Failed to fetch customers');
       const data = await response.json();
       setCustomers(data);
     } catch (error) {
@@ -24,6 +29,7 @@ export default function CustomerCRUD() {
       setLoading(false);
     }
   }
+  
 
   // Handle form submit for Add/Edit
   const handleCustomerSubmit = async (data) => {
