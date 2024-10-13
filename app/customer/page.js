@@ -44,6 +44,7 @@ export default function CustomerCRUD() {
       fetchCustomers();
     } catch (error) {
       alert(error.message);
+      console.log(error);
     }
   };
   
