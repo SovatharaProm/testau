@@ -1,16 +1,19 @@
-// /app/api/createcustomer/route.js
-import dbConnect from "@/lib/db";
 import Customer from "@/models/Customer";
-import { NextResponse } from "next/server";
+import { connectToDB } from "@/utils/database";
 
-export async function POST(req) {
-  await dbConnect();
-  try {
-    const { name, dateOfBirth, memberNumber, interest } = await req.json();
-    const newCustomer = new Customer({ name, dateOfBirth, memberNumber, interest });
-    await newCustomer.save();
-    return NextResponse.json(newCustomer, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: `Failed to create customer: ${error.message}` }, { status: 500 });
-  }
-}
+export const POST = async (req) => {
+    try {
+        await connectToDB();
+        
+        // Parse request body
+        const { name, dateOfBirth, memberNumber, interest } = await req.json();
+        
+        // Create a new customer
+        const newCustomer = new Customer({ name, dateOfBirth, memberNumber, interest });
+        await newCustomer.save();
+
+        return new Response(JSON.stringify(newCustomer), { status: 201 });
+    } catch (error) {
+        return new Response("Failed to create customer", { status: 500 });
+    }
+};

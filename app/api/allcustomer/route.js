@@ -1,19 +1,18 @@
-// /app/api/allcustomer/route.js
-import dbConnect from "@/lib/db";
 import Customer from "@/models/Customer";
-import { NextResponse } from "next/server";
+import { connectToDB } from "@/utils/database";
 
-export async function GET() {
-  await dbConnect();
-  try {
-    const customers = await Customer.find({});
-    const response = NextResponse.json(customers);
-    
-    // Add cache-control header to prevent caching
-    response.headers.set('Cache-Control', 'no-store');
-    
-    return response;
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
-  }
+// Set revalidation time to 1 second
+export const revalidate = 1;
+
+export const GET = async (request) => {
+    try {
+        await connectToDB();
+
+        // Fetch all customers from the database
+        const customers = await Customer.find({});
+
+        return new Response(JSON.stringify(customers), { status: 200 });
+    } catch (error) {
+        return new Response("Failed to fetch all customers", { status: 500 });
+    }
 }

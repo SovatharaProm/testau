@@ -16,7 +16,7 @@ export default function CustomerCRUD() {
       const response = await fetch('/api/allcustomer', {
         method: 'GET',
         headers: {
-          'Cache-Control': 'no-store', // Prevent caching
+          'Cache-Control': 'no-store', // Ensure no cache is used
         },
       });
   
