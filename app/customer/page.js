@@ -31,28 +31,27 @@ export default function CustomerCRUD() {
   }
   
 
-  // Handle form submit for Add/Edit
   const handleCustomerSubmit = async (data) => {
     try {
-      const response = await fetch('/api/createcustomer', {
-        method: 'POST', // Ensure it's POST
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error in adding customer: ${errorData.error}`);
-      }
-      alert('Customer added!');
-      resetForm();
-      fetchCustomers();
+        const response = await fetch('/api/createcustomer', {
+            method: 'POST', // Ensure it's POST
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Error in adding customer: ${errorData.error}`);
+        }
+        alert('Customer added!');
+        resetForm();
+        fetchCustomers();
     } catch (error) {
-      alert(error.message);
-      console.log(error);
+        alert(error.message);
+        console.log(error);
     }
-  };
+};
   
   
 
