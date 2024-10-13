@@ -1,9 +1,10 @@
+import dbConnect from "@/lib/db";
 import Customer from "@/models/Customer";
-import { connectToDB } from "@/utils/database";
+import { NextResponse } from "next/server";
 
 export const POST = async (req) => {
     try {
-        await connectToDB();
+        await dbConnect();
         
         // Parse request body
         const { name, dateOfBirth, memberNumber, interest } = await req.json();
@@ -12,8 +13,8 @@ export const POST = async (req) => {
         const newCustomer = new Customer({ name, dateOfBirth, memberNumber, interest });
         await newCustomer.save();
 
-        return new Response(JSON.stringify(newCustomer), { status: 201 });
+        return NextResponse.json(newCustomer, { status: 201 });
     } catch (error) {
-        return new Response("Failed to create customer", { status: 500 });
+        return NextResponse.json({ error: `Failed to create customer: ${error.message}` }, { status: 500 });
     }
 };
